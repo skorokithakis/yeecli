@@ -14,7 +14,7 @@ with open('README.rst') as readme_file:
 
 requirements = [
     "pyyeelight",
-    "docopt>=0.6.2",
+    "click>=6.6",
 ]
 
 test_requirements = [
