@@ -11,7 +11,10 @@ try:
 except:
     pass
 
-from __init__ import __version__
+try:
+    from . import __version__
+except SystemError:
+    from __init__ import __version__
 
 BULB = None
 
