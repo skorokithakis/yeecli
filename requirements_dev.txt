@@ -1,0 +1,4 @@
+wheel>=0.23.0
+flake8>=2.4.1
+tox>=2.1.1
+coverage>=4.0
