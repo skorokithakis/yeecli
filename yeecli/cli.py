@@ -1,9 +1,12 @@
 import os
 import sys
-import configparser as ConfigParser
+try:
+    import ConfigParser
+except ImportError:
+    import configparser as ConfigParser
 
 import click
-import pyyeelight
+import yeelight
 
 try:
     import tbvaccine
@@ -13,7 +16,7 @@ except:
 
 try:
     from . import __version__
-except SystemError:
+except (SystemError, ValueError):
     from __init__ import __version__
 
 BULB = None
@@ -48,10 +51,13 @@ def cli(ip, port, effect, duration):
         click.echo("No IP address specified.")
         sys.exit(1)
 
-    BULB = pyyeelight.YeelightBulb(ip=ip, port=port)
-
-    BULB.effect = effect
-    BULB.transition_time = duration
+    BULB = yeelight.Bulb(
+        ip=ip,
+        port=port,
+        effect=effect,
+        duration=duration,
+        auto_on=True
+    )
 
 
 @cli.command()
@@ -59,15 +65,15 @@ def cli(ip, port, effect, duration):
 def brightness(value):
     """Set the brightness of the bulb."""
     click.echo("Setting the bulb to {} brightness...".format(value))
-    BULB.set_brightness(value, effect=BULB.effect, transition_time=BULB.transition_time)
+    BULB.set_brightness(value)
 
 
 @cli.command()
 @click.argument("degrees", type=click.IntRange(1700, 6500, clamp=True))
 def temperature(degrees):
-    """Set the HSV value of the bulb."""
+    """Set the color temperature of the bulb."""
     click.echo("Setting the bulb's color temperature to {}...".format(degrees))
-    BULB.set_color_temperature(degrees, effect=BULB.effect, transition_time=BULB.transition_time)
+    BULB.set_color_temp(degrees)
 
 
 @cli.command()
@@ -76,10 +82,7 @@ def temperature(degrees):
 def hsv(hue, saturation):
     """Set the HSV value of the bulb."""
     click.echo("Setting the bulb to HSV {}, {}...".format(hue, saturation))
-    # Work around bulb bug.
-    if hue == saturation:
-        hue += 1
-    BULB.set_hsv_color(hue, saturation, effect=BULB.effect, transition_time=BULB.transition_time)
+    BULB.set_hsv(hue, saturation)
 
 
 @cli.command()
@@ -89,7 +92,7 @@ def hsv(hue, saturation):
 def rgb(red, green, blue):
     """Set the RGB value of the bulb."""
     click.echo("Setting the bulb to RGB {}, {}, {}...".format(red, green, blue))
-    BULB.set_rgb_color(red, green, blue, effect=BULB.effect, transition_time=BULB.transition_time)
+    BULB.set_rgb(red, green, blue)
 
 
 @cli.command()
@@ -105,23 +108,23 @@ def turn(state):
     """Turn the bulb on or off."""
     click.echo("Turning the bulb {}...".format(state))
     if state == "on":
-        BULB.turn_on(effect=BULB.effect, transition_time=BULB.transition_time)
+        BULB.turn_on()
     elif state == "off":
-        BULB.turn_off(effect=BULB.effect, transition_time=BULB.transition_time)
+        BULB.turn_off()
 
 
 @cli.command()
 def save():
     """Save the current settings as default."""
     click.echo("Saving settings...")
-    BULB.save_state()
+    BULB.set_default()
 
 
 @cli.command()
 def status():
     """Show the bulb's status."""
     click.echo("Bulb parameters:")
-    for key, value in BULB.get_all_properties().items():
+    for key, value in BULB.get_properties().items():
         click.echo("* {}: {}".format(key, value))
 
 if __name__ == "__main__":
