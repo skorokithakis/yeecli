@@ -42,10 +42,22 @@ def cli(ip, port, effect, duration):
     config = ConfigParser.SafeConfigParser()
     config.read([os.path.expanduser('~/.config/yeecli/yeecli.cfg')])
 
-    ip = ip or config.get("default", "ip", fallback=None)
-    port = port or int(config.get("default", "port", fallback="0")) or 55443
-    effect = effect or config.get("default", "effect", fallback=None) or "sudden"
-    duration = duration or int(config.get("default", "duration", fallback="0")) or 500
+    try:
+        ip = ip or config.get("default", "ip")
+    except ConfigParser.NoSectionError:
+        ip = None
+    try:
+        port = port or int(config.get("default", "port"))
+    except ConfigParser.NoSectionError:
+        port = 55443
+    try:
+        effect = effect or config.get("default", "effect")
+    except ConfigParser.NoSectionError:
+        effect = "sudden"
+    try:
+        duration = duration or int(config.get("default", "duration"))
+    except ConfigParser.NoSectionError:
+        duration = 500
 
     if not ip:
         click.echo("No IP address specified.")
