@@ -19,7 +19,7 @@ try:
 except (SystemError, ValueError):
     from __init__ import __version__
 
-BULB = None
+BULBS = []
 
 
 def hex_color_to_rgb(color):
@@ -68,8 +68,6 @@ def cli(ip, port, effect, duration, bulb, auto_on):
     yeecli is a command-line utility for controlling the YeeLight RGB LED
     lightbulb.
     """
-    global BULB
-
     config = ConfigParser.SafeConfigParser()
     config.read([os.path.expanduser('~/.config/yeecli/yeecli.cfg')])
 
@@ -82,13 +80,13 @@ def cli(ip, port, effect, duration, bulb, auto_on):
         click.echo("No IP address specified.")
         sys.exit(1)
 
-    BULB = yeelight.Bulb(
+    BULBS.append(yeelight.Bulb(
         ip=ip,
         port=port,
         effect=effect,
         duration=duration,
         auto_on=auto_on,
-    )
+    ))
 
 
 @cli.command()
@@ -96,7 +94,8 @@ def cli(ip, port, effect, duration, bulb, auto_on):
 def brightness(value):
     """Set the brightness of the bulb."""
     click.echo("Setting the bulb to {} brightness...".format(value))
-    BULB.set_brightness(value)
+    for bulb in BULBS:
+        bulb.set_brightness(value)
 
 
 @cli.command()
@@ -104,7 +103,8 @@ def brightness(value):
 def temperature(degrees):
     """Set the color temperature of the bulb."""
     click.echo("Setting the bulb's color temperature to {}...".format(degrees))
-    BULB.set_color_temp(degrees)
+    for bulb in BULBS:
+        bulb.set_color_temp(degrees)
 
 
 @cli.command()
@@ -113,7 +113,8 @@ def temperature(degrees):
 def hsv(hue, saturation):
     """Set the HSV value of the bulb."""
     click.echo("Setting the bulb to HSV {}, {}...".format(hue, saturation))
-    BULB.set_hsv(hue, saturation)
+    for bulb in BULBS:
+        bulb.set_hsv(hue, saturation)
 
 
 @cli.command()
@@ -122,14 +123,16 @@ def rgb(hex_color):
     """Set the RGB value of the bulb."""
     red, green, blue = hex_color_to_rgb(hex_color)
     click.echo("Setting the bulb to RGB {}...".format(hex_color))
-    BULB.set_rgb(red, green, blue)
+    for bulb in BULBS:
+        bulb.set_rgb(red, green, blue)
 
 
 @cli.command()
 def toggle():
     """Toggle the bulb's state on or off."""
     click.echo("Toggling the bulb...")
-    BULB.toggle()
+    for bulb in BULBS:
+        bulb.toggle()
 
 
 @cli.command()
@@ -145,15 +148,14 @@ def pulse(hex_color, pulses):
         yeelight.flow.RGBTransition(red, green, blue, duration=duration, brightness=1),
     ]
 
-    # Get the initial bulb state.
-    if BULB.get_properties().get("power", "off") == "off":
-        action = yeelight.Flow.actions.off
-    else:
-        action = yeelight.Flow.actions.recover
+    for bulb in BULBS:
+        # Get the initial bulb state.
+        if bulb.get_properties().get("power", "off") == "off":
+            action = yeelight.Flow.actions.off
+        else:
+            action = yeelight.Flow.actions.recover
 
-    flow = yeelight.Flow(count=pulses, action=action, transitions=transitions)
-
-    BULB.start_flow(flow)
+        bulb.start_flow(yeelight.Flow(count=pulses, action=action, transitions=transitions))
 
 
 @cli.command()
@@ -161,25 +163,28 @@ def pulse(hex_color, pulses):
 def turn(state):
     """Turn the bulb on or off."""
     click.echo("Turning the bulb {}...".format(state))
-    if state == "on":
-        BULB.turn_on()
-    elif state == "off":
-        BULB.turn_off()
+    for bulb in BULBS:
+        if state == "on":
+            bulb.turn_on()
+        elif state == "off":
+            bulb.turn_off()
 
 
 @cli.command()
 def save():
     """Save the current settings as default."""
     click.echo("Saving settings...")
-    BULB.set_default()
+    for bulb in BULBS:
+        bulb.set_default()
 
 
 @cli.command()
 def status():
     """Show the bulb's status."""
-    click.echo("Bulb parameters:")
-    for key, value in BULB.get_properties().items():
-        click.echo("* {}: {}".format(key, value))
+    for bulb in BULBS:
+        click.echo("\nBulb parameters:")
+        for key, value in bulb.get_properties().items():
+            click.echo("* {}: {}".format(key, value))
 
 if __name__ == "__main__":
     cli()
