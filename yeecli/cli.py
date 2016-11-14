@@ -22,6 +22,25 @@ except (SystemError, ValueError):
 BULB = None
 
 
+def param_or_config(param, config, section, name, default):
+    """
+    Return a parameter, config item or default, in thar order of
+    priority.
+    """
+    try:
+        conf_param = config.get(section, name)
+    except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
+        conf_param = None
+
+    try:
+        # Try to see if this parameter is an integer.
+        conf_param = int(conf_param)
+    except:
+        pass
+
+    return param or conf_param or default
+
+
 @click.group()
 @click.version_option(
     version=__version__,
@@ -32,7 +51,8 @@ BULB = None
 @click.option('--port', metavar='PORT', help="The bulb's port.", type=int)
 @click.option("--effect", metavar='EFFECT', help="The transition effect.", type=click.Choice(['smooth', 'sudden']))
 @click.option("--duration", metavar="DURATION_MS", help="The transition effect duration.", type=click.IntRange(1, 60000, clamp=True))
-def cli(ip, port, effect, duration):
+@click.option("--bulb", metavar="NAME", default="default", help="The name of the bulb in the config file.", type=str)
+def cli(ip, port, effect, duration, bulb):
     """
     yeecli is a command-line utility for controlling the YeeLight RGB LED
     lightbulb.
@@ -42,22 +62,10 @@ def cli(ip, port, effect, duration):
     config = ConfigParser.SafeConfigParser()
     config.read([os.path.expanduser('~/.config/yeecli/yeecli.cfg')])
 
-    try:
-        ip = ip or config.get("default", "ip")
-    except ConfigParser.NoSectionError:
-        ip = None
-    try:
-        port = port or int(config.get("default", "port"))
-    except ConfigParser.NoSectionError:
-        port = 55443
-    try:
-        effect = effect or config.get("default", "effect")
-    except ConfigParser.NoSectionError:
-        effect = "sudden"
-    try:
-        duration = duration or int(config.get("default", "duration"))
-    except ConfigParser.NoSectionError:
-        duration = 500
+    ip = param_or_config(ip, config, bulb, "ip", None)
+    port = param_or_config(port, config, bulb, "port", 55443)
+    effect = param_or_config(effect, config, bulb, "effect", "sudden")
+    duration = param_or_config(duration, config, bulb, "duration", 500)
 
     if not ip:
         click.echo("No IP address specified.")

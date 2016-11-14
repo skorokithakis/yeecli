@@ -43,3 +43,23 @@ this::
 
 And the defaults will be loaded from it. All the values in it are optional, and
 you can override them in the command line when running the script.
+
+You can also specify multiple bulbs like so::
+
+    [default]
+    ip = 192.168.12.3
+    port = 55433
+    effect = smooth
+    duration = 500
+
+    [bedroom]
+    ip = 192.168.12.4
+    effect = smooth
+    duration = 500
+
+    [hallway]
+    ip = 192.168.12.5
+
+Then, to select a specific bulb, just pass it to the ``--bulb`` option::
+
+    yeecli --bulb=bedroom brightness 100
