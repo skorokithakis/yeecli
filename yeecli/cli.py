@@ -62,7 +62,8 @@ def param_or_config(param, config, section, name, default):
 @click.option("--effect", metavar='EFFECT', help="The transition effect.", type=click.Choice(['smooth', 'sudden']))
 @click.option("--duration", metavar="DURATION_MS", help="The transition effect duration.", type=click.IntRange(1, 60000, clamp=True))
 @click.option("--bulb", metavar="NAME", default="default", help="The name of the bulb in the config file.", type=str)
-def cli(ip, port, effect, duration, bulb):
+@click.option("--auto-on/--no-auto-on", default=True)
+def cli(ip, port, effect, duration, bulb, auto_on):
     """
     yeecli is a command-line utility for controlling the YeeLight RGB LED
     lightbulb.
@@ -86,7 +87,7 @@ def cli(ip, port, effect, duration, bulb):
         port=port,
         effect=effect,
         duration=duration,
-        auto_on=True
+        auto_on=auto_on,
     )
 
 
@@ -143,7 +144,15 @@ def pulse(hex_color, pulses):
         yeelight.flow.RGBTransition(red, green, blue, duration=duration),
         yeelight.flow.RGBTransition(red, green, blue, duration=duration, brightness=1),
     ]
-    flow = yeelight.Flow(count=pulses, transitions=transitions)
+
+    # Get the initial bulb state.
+    if BULB.get_properties().get("power", "off") == "off":
+        action = yeelight.Flow.actions.off
+    else:
+        action = yeelight.Flow.actions.recover
+
+    flow = yeelight.Flow(count=pulses, action=action, transitions=transitions)
+
     BULB.start_flow(flow)
 
 
