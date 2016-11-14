@@ -22,6 +22,16 @@ except (SystemError, ValueError):
 BULB = None
 
 
+def hex_color_to_rgb(color):
+    "Convert a hex color string to an RGB tuple."
+    color = color.strip("#")
+    try:
+        red, green, blue = tuple(int(color[i:i + 2], 16) for i in (0, 2, 4))
+    except:
+        red, green, blue = (255, 0, 0)
+    return red, green, blue
+
+
 def param_or_config(param, config, section, name, default):
     """
     Return a parameter, config item or default, in thar order of
@@ -106,12 +116,11 @@ def hsv(hue, saturation):
 
 
 @cli.command()
-@click.argument("red", type=click.IntRange(0, 255, clamp=True))
-@click.argument("green", type=click.IntRange(0, 255, clamp=True))
-@click.argument("blue", type=click.IntRange(0, 255, clamp=True))
-def rgb(red, green, blue):
+@click.argument("hex_color", type=str)
+def rgb(hex_color):
     """Set the RGB value of the bulb."""
-    click.echo("Setting the bulb to RGB {}, {}, {}...".format(red, green, blue))
+    red, green, blue = hex_color_to_rgb(hex_color)
+    click.echo("Setting the bulb to RGB {}...".format(hex_color))
     BULB.set_rgb(red, green, blue)
 
 
@@ -120,6 +129,22 @@ def toggle():
     """Toggle the bulb's state on or off."""
     click.echo("Toggling the bulb...")
     BULB.toggle()
+
+
+@cli.command()
+@click.argument("hex_color", type=str)
+@click.option("--pulses", metavar='COUNT', type=int, default=2,
+              help="The number of times to pulse.")
+def pulse(hex_color, pulses):
+    """Pulse the bulb in a specific color."""
+    red, green, blue = hex_color_to_rgb(hex_color)
+    duration = 250
+    transitions = [
+        yeelight.flow.RGBTransition(red, green, blue, duration=duration),
+        yeelight.flow.RGBTransition(red, green, blue, duration=duration, brightness=1),
+    ]
+    flow = yeelight.Flow(count=pulses, transitions=transitions)
+    BULB.start_flow(flow)
 
 
 @cli.command()
