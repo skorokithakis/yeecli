@@ -13,7 +13,7 @@ with open('README.rst') as readme_file:
     readme = readme_file.read()
 
 requirements = [
-    "yeelight>=0.0.4",
+    "yeelight>=0.0.5",
     "click>=6.6",
 ]
 
