@@ -13,12 +13,19 @@ yeecli is a command-line utility for controlling the YeeLight RGB LED lightbulb.
 It is released under the BSD license.
 
 
-Installation
-------------
+Quick start
+-----------
 
 You can install yeecli with pip::
 
     pip install yeecli
+
+You're done! Here are a few sample commands::
+
+    yee --ip=192.168.0.34 turn on
+    yee --ip=192.168.0.34 toggle
+    yee --ip=192.168.0.34 rgb ff00ff
+    yee --ip=192.168.0.34 brightness 100
 
 
 Features
@@ -83,4 +90,4 @@ You can also specify multiple bulbs like so::
 
 Then, to select a specific bulb, just pass it to the ``--bulb`` option::
 
-    yeecli --bulb=bedroom brightness 100
+    yee --bulb=bedroom brightness 100

@@ -51,6 +51,9 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     entry_points={
-        'console_scripts': ['yeecli=yeecli.cli:cli'],
+        'console_scripts': [
+            'yeecli=yeecli.cli:cli',
+            'yee=yeecli.cli:cli',
+        ],
     },
 )
