@@ -176,10 +176,12 @@ def preset():
 
 
 @preset.command()
-def disco():
+@click.option("--bpm", metavar='BPM', type=int, default=200,
+              help="The beats per minute to pulse at.")
+def disco(bpm):
     """Party!"""
     click.echo("Party mode: activated.")
-    duration = 300
+    duration = int(60000 / bpm)
     transitions = [
         yeelight.flow.HSVTransition(0, 100, duration=duration, brightness=100),
         yeelight.flow.HSVTransition(0, 100, duration=duration, brightness=1),
