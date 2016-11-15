@@ -198,6 +198,13 @@ def disco(bpm):
 
 
 @preset.command()
+def stop():
+    """Stop any currently playing presets and return to the prior state."""
+    for bulb in BULBS:
+        bulb.stop_flow()
+
+
+@preset.command()
 def strobe():
     """Epilepsy warning."""
     click.echo("Strobing.")
