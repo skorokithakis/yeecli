@@ -51,7 +51,7 @@ def param_or_config(param, config, section, name, default):
     return param or conf_param or default
 
 
-@click.group()
+@click.group(context_settings={"help_option_names": ["-h", "--help"]})
 @click.version_option(
     version=__version__,
     prog_name="yeecli",
@@ -59,9 +59,9 @@ def param_or_config(param, config, section, name, default):
 )
 @click.option('--ip', metavar='IP', help="The bulb's IP address.")
 @click.option('--port', metavar='PORT', help="The bulb's port.", type=int)
-@click.option("--effect", metavar='EFFECT', help="The transition effect.", type=click.Choice(['smooth', 'sudden']))
-@click.option("--duration", metavar="DURATION_MS", help="The transition effect duration.", type=click.IntRange(1, 60000, clamp=True))
-@click.option("--bulb", metavar="NAME", default="default", help="The name of the bulb in the config file.", type=str)
+@click.option("--effect", "-e", metavar='EFFECT', help="The transition effect.", type=click.Choice(['smooth', 'sudden']))
+@click.option("--duration", "-d", metavar="DURATION_MS", help="The transition effect duration.", type=click.IntRange(1, 60000, clamp=True))
+@click.option("--bulb", "-b", metavar="NAME", default="default", help="The name of the bulb in the config file.", type=str)
 @click.option("--auto-on/--no-auto-on", default=True)
 def cli(ip, port, effect, duration, bulb, auto_on):
     """
@@ -137,7 +137,7 @@ def toggle():
 
 @cli.command()
 @click.argument("hex_color", type=str)
-@click.option("--pulses", metavar='COUNT', type=int, default=2,
+@click.option("--pulses", "-p", metavar='COUNT', type=int, default=2,
               help="The number of times to pulse.")
 def pulse(hex_color, pulses):
     """Pulse the bulb in a specific color."""
