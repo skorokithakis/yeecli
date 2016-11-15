@@ -171,6 +171,26 @@ def turn(state):
 
 
 @cli.command()
+def disco():
+    """Party!"""
+    click.echo("Party mode: activated.")
+    duration = 300
+    transitions = [
+        yeelight.flow.HSVTransition(0, 100, duration=duration, brightness=100),
+        yeelight.flow.HSVTransition(0, 100, duration=duration, brightness=1),
+        yeelight.flow.HSVTransition(90, 100, duration=duration, brightness=100),
+        yeelight.flow.HSVTransition(90, 100, duration=duration, brightness=1),
+        yeelight.flow.HSVTransition(180, 100, duration=duration, brightness=100),
+        yeelight.flow.HSVTransition(180, 100, duration=duration, brightness=1),
+        yeelight.flow.HSVTransition(270, 100, duration=duration, brightness=100),
+        yeelight.flow.HSVTransition(270, 100, duration=duration, brightness=1),
+    ]
+    flow = yeelight.Flow(count=0, transitions=transitions)
+    for bulb in BULBS:
+        bulb.start_flow(flow)
+
+
+@cli.command()
 def save():
     """Save the current settings as default."""
     click.echo("Saving settings...")
