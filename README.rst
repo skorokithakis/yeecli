@@ -21,6 +21,21 @@ You can install yeecli with pip::
     pip install yeecli
 
 
+Features
+--------
+
+This is a list of features supported right now and features that I'm wanting to
+add later:
+
+- [x] Non-music modes
+- [ ] Music mode
+- [x] All flow transitions in the protocol
+- [x] Additional HSV flow transition
+- [x] Presets
+- [ ] Multiple bulbs
+- [ ] Bulb groups
+- [ ] Discovery
+
 Usage
 -----
 

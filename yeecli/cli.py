@@ -62,7 +62,7 @@ def param_or_config(param, config, section, name, default):
 @click.option("--effect", "-e", metavar='EFFECT', help="The transition effect.", type=click.Choice(['smooth', 'sudden']))
 @click.option("--duration", "-d", metavar="DURATION_MS", help="The transition effect duration.", type=click.IntRange(1, 60000, clamp=True))
 @click.option("--bulb", "-b", metavar="NAME", default="default", help="The name of the bulb in the config file.", type=str)
-@click.option("--auto-on/--no-auto-on", default=True)
+@click.option("--auto-on/--no-auto-on", default=True, help="Whether to turn the bulb on automatically before a command (on by default).")
 def cli(ip, port, effect, duration, bulb, auto_on):
     """
     yeecli is a command-line utility for controlling the YeeLight RGB LED
