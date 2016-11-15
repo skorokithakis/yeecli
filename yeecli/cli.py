@@ -170,7 +170,12 @@ def turn(state):
             bulb.turn_off()
 
 
-@cli.command()
+@cli.group()
+def preset():
+    """Various presets."""
+
+
+@preset.command()
 def disco():
     """Party!"""
     click.echo("Party mode: activated.")
@@ -184,6 +189,32 @@ def disco():
         yeelight.flow.HSVTransition(180, 100, duration=duration, brightness=1),
         yeelight.flow.HSVTransition(270, 100, duration=duration, brightness=100),
         yeelight.flow.HSVTransition(270, 100, duration=duration, brightness=1),
+    ]
+    flow = yeelight.Flow(count=0, transitions=transitions)
+    for bulb in BULBS:
+        bulb.start_flow(flow)
+
+
+@preset.command()
+def strobe():
+    """Epilepsy warning."""
+    click.echo("Strobing.")
+    transitions = [
+        yeelight.flow.HSVTransition(0, 0, duration=50, brightness=100),
+        yeelight.flow.HSVTransition(0, 0, duration=50, brightness=1),
+    ]
+    flow = yeelight.Flow(count=0, transitions=transitions)
+    for bulb in BULBS:
+        bulb.start_flow(flow)
+
+
+@preset.command()
+def temp():
+    """Slowly-changing color temperature."""
+    click.echo("Enjoy.")
+    transitions = [
+        yeelight.flow.TemperatureTransition(1700, duration=40000),
+        yeelight.flow.TemperatureTransition(6500, duration=40000),
     ]
     flow = yeelight.Flow(count=0, transitions=transitions)
     for bulb in BULBS:
