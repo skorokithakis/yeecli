@@ -25,16 +25,22 @@ Features
 --------
 
 This is a list of features supported right now and features that I'm wanting to
-add later:
+add later.
 
-- [x] Non-music modes
-- [ ] Music mode
-- [x] All flow transitions in the protocol
-- [x] Additional HSV flow transition
-- [x] Presets
-- [ ] Multiple bulbs
-- [ ] Bulb groups
-- [ ] Discovery
+Currently supported:
+
+* Non-music modes
+* All flow transitions in the protocol
+* Additional HSV flow transition
+* Presets
+
+Will probably be supported at some point:
+
+* Music mode
+* Multiple bulbs
+* Bulb groups
+* Discovery
+
 
 Usage
 -----
