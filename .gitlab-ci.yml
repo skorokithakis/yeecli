@@ -1,7 +1,18 @@
 image: themattrix/tox
-before_script:
-  - pip install -U pip tox
 
-test:
+stages:
+  - static_check
+  - tests
+
+before_script:
+  - pip install -r requirements_dev.txt
+
+static_check:
+  stage: static_check
+  script:
+    - flake8 .
+
+tests:
+  stage: tests
   script:
   - tox

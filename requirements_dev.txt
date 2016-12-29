@@ -1,4 +1,7 @@
 wheel>=0.23.0
-flake8>=2.4.1
+flake8
+flake8-import-order
+flake8-tidy-imports
+pep8-naming
 tox>=2.1.1
 coverage>=4.0
