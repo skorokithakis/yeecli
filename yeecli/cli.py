@@ -6,7 +6,8 @@ except ImportError:
     import configparser as ConfigParser
 
 import click
-import yeelight
+import yeelight  # noqa
+
 
 try:
     import tbvaccine
@@ -245,6 +246,7 @@ def status():
         click.echo("\nBulb parameters:")
         for key, value in bulb.get_properties().items():
             click.echo("* {}: {}".format(key, value))
+
 
 if __name__ == "__main__":
     cli()

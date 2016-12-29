@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import time
 import unittest
-
 
 
 class TestThings(unittest.TestCase):
