@@ -7,6 +7,7 @@ except ImportError:
 
 import click
 import yeelight  # noqa
+from yeelight import transitions as tr
 
 
 try:
@@ -143,11 +144,7 @@ def toggle():
 def pulse(hex_color, pulses):
     """Pulse the bulb in a specific color."""
     red, green, blue = hex_color_to_rgb(hex_color)
-    duration = 250
-    transitions = [
-        yeelight.flow.RGBTransition(red, green, blue, duration=duration),
-        yeelight.flow.RGBTransition(red, green, blue, duration=duration, brightness=1),
-    ]
+    transitions = tr.pulse(red, green, blue)
 
     for bulb in BULBS:
         # Get the initial bulb state.
@@ -182,18 +179,7 @@ def preset():
 def disco(bpm):
     """Party!"""
     click.echo("Party mode: activated.")
-    duration = int(60000 / bpm)
-    transitions = [
-        yeelight.flow.HSVTransition(0, 100, duration=duration, brightness=100),
-        yeelight.flow.HSVTransition(0, 100, duration=duration, brightness=1),
-        yeelight.flow.HSVTransition(90, 100, duration=duration, brightness=100),
-        yeelight.flow.HSVTransition(90, 100, duration=duration, brightness=1),
-        yeelight.flow.HSVTransition(180, 100, duration=duration, brightness=100),
-        yeelight.flow.HSVTransition(180, 100, duration=duration, brightness=1),
-        yeelight.flow.HSVTransition(270, 100, duration=duration, brightness=100),
-        yeelight.flow.HSVTransition(270, 100, duration=duration, brightness=1),
-    ]
-    flow = yeelight.Flow(count=0, transitions=transitions)
+    flow = yeelight.Flow(count=0, transitions=tr.disco(bpm))
     for bulb in BULBS:
         bulb.start_flow(flow)
 
@@ -209,11 +195,7 @@ def stop():
 def strobe():
     """Epilepsy warning."""
     click.echo("Strobing.")
-    transitions = [
-        yeelight.flow.HSVTransition(0, 0, duration=50, brightness=100),
-        yeelight.flow.HSVTransition(0, 0, duration=50, brightness=1),
-    ]
-    flow = yeelight.Flow(count=0, transitions=transitions)
+    flow = yeelight.Flow(count=0, transitions=tr.strobe())
     for bulb in BULBS:
         bulb.start_flow(flow)
 
@@ -222,11 +204,7 @@ def strobe():
 def temp():
     """Slowly-changing color temperature."""
     click.echo("Enjoy.")
-    transitions = [
-        yeelight.flow.TemperatureTransition(1700, duration=40000),
-        yeelight.flow.TemperatureTransition(6500, duration=40000),
-    ]
-    flow = yeelight.Flow(count=0, transitions=transitions)
+    flow = yeelight.Flow(count=0, transitions=tr.temp())
     for bulb in BULBS:
         bulb.start_flow(flow)
 
