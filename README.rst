@@ -40,11 +40,11 @@ Currently supported:
 * All flow transitions in the protocol
 * Additional HSV flow transition
 * Presets
+* Multiple bulbs
 
 Will probably be supported at some point:
 
 * Music mode
-* Multiple bulbs
 * Bulb groups
 * Discovery
 
