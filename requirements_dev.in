@@ -1,0 +1,8 @@
+wheel
+flake8
+flake8-docstrings
+flake8-import-order
+flake8-tidy-imports
+pep8-naming
+tox
+coverage
