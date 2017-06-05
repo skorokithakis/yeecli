@@ -63,7 +63,7 @@ def param_or_config(param, config, section, name, default):
 @click.option("--bulb", "-b", metavar="NAME", default="default", help="The name of the bulb in the config file.", type=str)
 @click.option("--auto-on/--no-auto-on", default=True, help="Whether to turn the bulb on automatically before a command (on by default).")
 def cli(ip, port, effect, duration, bulb, auto_on):
-    """yeecli is a command-line utility for controlling the YeeLight RGB LED lightbulb."""
+    """Easily control the YeeLight RGB LED lightbulb."""
     config = ConfigParser.SafeConfigParser()
     config.read([os.path.expanduser('~/.config/yeecli/yeecli.cfg')])
 
@@ -169,7 +169,7 @@ def preset():
 
 @preset.command()
 def alarm():
-    """A red alarm."""
+    """Flash a red alarm."""
     click.echo("Alarm!")
     transitions = tr.alarm(500)
     flow = yeelight.Flow(count=0, transitions=transitions)
@@ -191,7 +191,7 @@ def christmas():
 @click.option("--bpm", metavar='BPM', type=int, default=200,
               help="The beats per minute to pulse at.")
 def disco(bpm):
-    """Party!"""
+    """Party."""
     click.echo("Party mode: activated.")
     flow = yeelight.Flow(count=0, transitions=tr.disco(bpm))
     for bulb in BULBS:

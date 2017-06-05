@@ -5,7 +5,10 @@ import unittest
 
 
 class TestThings(unittest.TestCase):
+    """Tests."""
+
     def test_stuff(self):
+        """Test stuff."""
         pass
 
 
