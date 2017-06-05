@@ -25,7 +25,7 @@ BULBS = []
 
 
 def hex_color_to_rgb(color):
-    "Convert a hex color string to an RGB tuple."
+    """Convert a hex color string to an RGB tuple."""
     color = color.strip("#")
     try:
         red, green, blue = tuple(int(color[i:i + 2], 16) for i in (0, 2, 4))
@@ -35,10 +35,7 @@ def hex_color_to_rgb(color):
 
 
 def param_or_config(param, config, section, name, default):
-    """
-    Return a parameter, config item or default, in thar order of
-    priority.
-    """
+    """Return a parameter, config item or default, in thar order of priority."""
     try:
         conf_param = config.get(section, name)
     except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
@@ -66,10 +63,7 @@ def param_or_config(param, config, section, name, default):
 @click.option("--bulb", "-b", metavar="NAME", default="default", help="The name of the bulb in the config file.", type=str)
 @click.option("--auto-on/--no-auto-on", default=True, help="Whether to turn the bulb on automatically before a command (on by default).")
 def cli(ip, port, effect, duration, bulb, auto_on):
-    """
-    yeecli is a command-line utility for controlling the YeeLight RGB LED
-    lightbulb.
-    """
+    """yeecli is a command-line utility for controlling the YeeLight RGB LED lightbulb."""
     config = ConfigParser.SafeConfigParser()
     config.read([os.path.expanduser('~/.config/yeecli/yeecli.cfg')])
 
@@ -174,6 +168,26 @@ def preset():
 
 
 @preset.command()
+def alarm():
+    """A red alarm."""
+    click.echo("Alarm!")
+    transitions = tr.alarm(500)
+    flow = yeelight.Flow(count=0, transitions=transitions)
+    for bulb in BULBS:
+        bulb.start_flow(flow)
+
+
+@preset.command()
+def christmas():
+    """Christmas lights."""
+    click.echo("Happy holidays.")
+    transitions = tr.christmas()
+    flow = yeelight.Flow(count=0, transitions=transitions)
+    for bulb in BULBS:
+        bulb.start_flow(flow)
+
+
+@preset.command()
 @click.option("--bpm", metavar='BPM', type=int, default=200,
               help="The beats per minute to pulse at.")
 def disco(bpm):
@@ -185,17 +199,71 @@ def disco(bpm):
 
 
 @preset.command()
-def stop():
-    """Stop any currently playing presets and return to the prior state."""
+def lsd():
+    """Christmas lights."""
+    click.echo("Enjoy your trip.")
+    transitions = tr.lsd()
+    flow = yeelight.Flow(count=0, transitions=transitions)
     for bulb in BULBS:
-        bulb.stop_flow()
+        bulb.start_flow(flow)
+
+
+@preset.command()
+def police():
+    """Police lights."""
+    click.echo("It's the fuzz!")
+    transitions = tr.police()
+    flow = yeelight.Flow(count=0, transitions=transitions)
+    for bulb in BULBS:
+        bulb.start_flow(flow)
+
+
+@preset.command()
+def police2():
+    """More police lights."""
+    click.echo("It's the fuzz again!")
+    transitions = tr.police2()
+    flow = yeelight.Flow(count=0, transitions=transitions)
+    for bulb in BULBS:
+        bulb.start_flow(flow)
+
+
+@preset.command()
+def random():
+    """Random colors."""
+    click.echo("Random colors!")
+    transitions = tr.randomloop()
+    flow = yeelight.Flow(count=0, transitions=transitions)
+    for bulb in BULBS:
+        bulb.start_flow(flow)
+
+
+@preset.command()
+def redgreenblue():
+    """Change from red to green to blue."""
+    click.echo("Pretty colors.")
+    transitions = tr.rgb()
+    flow = yeelight.Flow(count=0, transitions=transitions)
+    for bulb in BULBS:
+        bulb.start_flow(flow)
+
+
+@preset.command()
+def slowdown():
+    """Cycle with increasing transition time."""
+    click.echo("Sloooooowwwwlllyyy..")
+    transitions = tr.slowdown()
+    flow = yeelight.Flow(count=0, transitions=transitions)
+    for bulb in BULBS:
+        bulb.start_flow(flow)
 
 
 @preset.command()
 def strobe():
     """Epilepsy warning."""
     click.echo("Strobing.")
-    flow = yeelight.Flow(count=0, transitions=tr.strobe())
+    transitions = tr.strobe()
+    flow = yeelight.Flow(count=0, transitions=transitions)
     for bulb in BULBS:
         bulb.start_flow(flow)
 
@@ -204,9 +272,17 @@ def strobe():
 def temp():
     """Slowly-changing color temperature."""
     click.echo("Enjoy.")
-    flow = yeelight.Flow(count=0, transitions=tr.temp())
+    transitions = tr.temp()
+    flow = yeelight.Flow(count=0, transitions=transitions)
     for bulb in BULBS:
         bulb.start_flow(flow)
+
+
+@preset.command()
+def stop():
+    """Stop any currently playing presets and return to the prior state."""
+    for bulb in BULBS:
+        bulb.stop_flow()
 
 
 @cli.command()
