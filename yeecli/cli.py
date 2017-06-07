@@ -199,10 +199,12 @@ def disco(bpm):
 
 
 @preset.command()
-def lsd():
-    """Christmas lights."""
+@click.option("-d", "--duration", metavar='DURATION', type=int, default=3000,
+              help="The number of milliseconds to take for each change.")
+def lsd(duration):
+    """Color changes to a trippy palette."""
     click.echo("Enjoy your trip.")
-    transitions = tr.lsd()
+    transitions = tr.lsd(duration=duration)
     flow = yeelight.Flow(count=0, transitions=transitions)
     for bulb in BULBS:
         bulb.start_flow(flow)
@@ -229,10 +231,12 @@ def police2():
 
 
 @preset.command()
-def random():
+@click.option("-d", "--duration", metavar='DURATION', type=int, default=750,
+              help="The number of milliseconds to take for each change.")
+def random(duration):
     """Random colors."""
     click.echo("Random colors!")
-    transitions = tr.randomloop()
+    transitions = tr.randomloop(duration=duration)
     flow = yeelight.Flow(count=0, transitions=transitions)
     for bulb in BULBS:
         bulb.start_flow(flow)
