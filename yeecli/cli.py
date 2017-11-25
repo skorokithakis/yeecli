@@ -303,6 +303,8 @@ def status():
     for bulb in BULBS:
         click.echo("\nBulb parameters:")
         for key, value in bulb.get_properties().items():
+            if key == 'rgb':
+                value = hex(int(value))
             click.echo("* {}: {}".format(key, value))
 
 
