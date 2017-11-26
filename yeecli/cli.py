@@ -1,19 +1,19 @@
 import os
 import sys
-try:
-    import ConfigParser
-except ImportError:
-    import configparser as ConfigParser
 
 import click
 import yeelight  # noqa
 from yeelight import transitions as tr
 
+try:
+    import ConfigParser
+except ImportError:
+    import configparser as ConfigParser
 
 try:
     import tbvaccine
     tbvaccine.add_hook()
-except:
+except:  # noqa
     pass
 
 try:
@@ -29,7 +29,7 @@ def hex_color_to_rgb(color):
     color = color.strip("#")
     try:
         red, green, blue = tuple(int(color[i:i + 2], 16) for i in (0, 2, 4))
-    except:
+    except (TypeError, ValueError):
         red, green, blue = (255, 0, 0)
     return red, green, blue
 
@@ -44,24 +44,34 @@ def param_or_config(param, config, section, name, default):
     try:
         # Try to see if this parameter is an integer.
         conf_param = int(conf_param)
-    except:
+    except (TypeError, ValueError):
         pass
 
     return param or conf_param or default
 
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"]})
-@click.version_option(
-    version=__version__,
-    prog_name="yeecli",
-    message="%(prog)s %(version)s: And there was light."
-)
+@click.version_option(version=__version__, prog_name="yeecli", message="%(prog)s %(version)s: And there was light.")
 @click.option('--ip', metavar='IP', help="The bulb's IP address.")
 @click.option('--port', metavar='PORT', help="The bulb's port.", type=int)
-@click.option("--effect", "-e", metavar='EFFECT', help="The transition effect.", type=click.Choice(['smooth', 'sudden']))
-@click.option("--duration", "-d", metavar="DURATION_MS", help="The transition effect duration.", type=click.IntRange(1, 60000, clamp=True))
-@click.option("--bulb", "-b", metavar="NAME", default="default", help="The name of the bulb in the config file.", type=str)
-@click.option("--auto-on/--no-auto-on", default=True, help="Whether to turn the bulb on automatically before a command (on by default).")
+@click.option(
+    "--effect", "-e", metavar='EFFECT', help="The transition effect.", type=click.Choice(['smooth', 'sudden'])
+)
+@click.option(
+    "--duration",
+    "-d",
+    metavar="DURATION_MS",
+    help="The transition effect duration.",
+    type=click.IntRange(1, 60000, clamp=True)
+)
+@click.option(
+    "--bulb", "-b", metavar="NAME", default="default", help="The name of the bulb in the config file.", type=str
+)
+@click.option(
+    "--auto-on/--no-auto-on",
+    default=True,
+    help="Whether to turn the bulb on automatically before a command (on by default)."
+)
 def cli(ip, port, effect, duration, bulb, auto_on):
     """Easily control the YeeLight RGB LED lightbulb."""
     config = ConfigParser.SafeConfigParser()
@@ -133,8 +143,7 @@ def toggle():
 
 @cli.command()
 @click.argument("hex_color", type=str)
-@click.option("--pulses", "-p", metavar='COUNT', type=int, default=2,
-              help="The number of times to pulse.")
+@click.option("--pulses", "-p", metavar='COUNT', type=int, default=2, help="The number of times to pulse.")
 def pulse(hex_color, pulses):
     """Pulse the bulb in a specific color."""
     red, green, blue = hex_color_to_rgb(hex_color)
@@ -188,8 +197,7 @@ def christmas():
 
 
 @preset.command()
-@click.option("--bpm", metavar='BPM', type=int, default=200,
-              help="The beats per minute to pulse at.")
+@click.option("--bpm", metavar='BPM', type=int, default=200, help="The beats per minute to pulse at.")
 def disco(bpm):
     """Party."""
     click.echo("Party mode: activated.")
@@ -199,8 +207,14 @@ def disco(bpm):
 
 
 @preset.command()
-@click.option("-d", "--duration", metavar='DURATION', type=int, default=3000,
-              help="The number of milliseconds to take for each change.")
+@click.option(
+    "-d",
+    "--duration",
+    metavar='DURATION',
+    type=int,
+    default=3000,
+    help="The number of milliseconds to take for each change."
+)
 def lsd(duration):
     """Color changes to a trippy palette."""
     click.echo("Enjoy your trip.")
@@ -231,8 +245,14 @@ def police2():
 
 
 @preset.command()
-@click.option("-d", "--duration", metavar='DURATION', type=int, default=750,
-              help="The number of milliseconds to take for each change.")
+@click.option(
+    "-d",
+    "--duration",
+    metavar='DURATION',
+    type=int,
+    default=750,
+    help="The number of milliseconds to take for each change."
+)
 def random(duration):
     """Random colors."""
     click.echo("Random colors!")
@@ -283,8 +303,8 @@ def temp():
 
 
 @preset.command()
-@click.argument('duration', type=click.IntRange(50, 24*60*60), required=False)
-def sunrise(duration=5*60):
+@click.argument('duration', type=click.IntRange(50, 24 * 60 * 60), required=False)
+def sunrise(duration=5 * 60):
     """Simulate sunrise in seconds (default 5min)."""
     click.echo("Good morning!")
     # We're using seconds for duration because it's a more natural timescale
@@ -295,11 +315,10 @@ def sunrise(duration=5*60):
         tr.TemperatureTransition(1700, duration=50, brightness=1),
         # Then slowly transition to higher temperature, max brightness.
         # 5000 is about regular daylight white.
-        tr.TemperatureTransition(2100, duration=duration/2, brightness=50),
-        tr.TemperatureTransition(5000, duration=duration/2, brightness=100),
+        tr.TemperatureTransition(2100, duration=duration / 2, brightness=50),
+        tr.TemperatureTransition(5000, duration=duration / 2, brightness=100),
     ]
-    flow = yeelight.Flow(count=1, action=yeelight.flow.Action.stay,
-                         transitions=transitions)
+    flow = yeelight.Flow(count=1, action=yeelight.flow.Action.stay, transitions=transitions)
     for bulb in BULBS:
         bulb.start_flow(flow)
 
