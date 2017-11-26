@@ -285,7 +285,7 @@ def temp():
 @preset.command()
 @click.argument('duration', type=click.IntRange(50, 24*60*60*1000), required=False)
 def sunrise(duration=5*60*1000):
-    """Simulate sunrise of given duration in mulliseconds (default 5min)"""
+    """Simulate sunrise in milliseconds (default 5min)."""
     click.echo("Good morning!")
     transitions = [
         # first set to minimum temperature, low brightness, nearly immediately
