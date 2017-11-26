@@ -283,6 +283,28 @@ def temp():
 
 
 @preset.command()
+@click.argument('duration', type=click.IntRange(50, 24*60*60), required=False)
+def sunrise(duration=5*60):
+    """Simulate sunrise in seconds (default 5min)."""
+    click.echo("Good morning!")
+    # We're using seconds for duration because it's a more natural timescale
+    # for this preset.
+    duration = duration * 1000
+    transitions = [
+        # First set to minimum temperature, low brightness, nearly immediately.
+        tr.TemperatureTransition(1700, duration=50, brightness=1),
+        # Then slowly transition to higher temperature, max brightness.
+        # 5000 is about regular daylight white.
+        tr.TemperatureTransition(2100, duration=duration/2, brightness=50),
+        tr.TemperatureTransition(5000, duration=duration/2, brightness=100),
+    ]
+    flow = yeelight.Flow(count=1, action=yeelight.flow.Action.stay,
+                         transitions=transitions)
+    for bulb in BULBS:
+        bulb.start_flow(flow)
+
+
+@preset.command()
 def stop():
     """Stop any currently playing presets and return to the prior state."""
     for bulb in BULBS:
