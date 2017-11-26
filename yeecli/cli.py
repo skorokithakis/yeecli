@@ -283,10 +283,13 @@ def temp():
 
 
 @preset.command()
-@click.argument('duration', type=click.IntRange(50, 24*60*60*1000), required=False)
-def sunrise(duration=5*60*1000):
-    """Simulate sunrise in milliseconds (default 5min)."""
+@click.argument('duration', type=click.IntRange(50, 24*60*60), required=False)
+def sunrise(duration=5*60):
+    """Simulate sunrise in seconds (default 5min)."""
     click.echo("Good morning!")
+    # We're using seconds for duration because it's a more natural timescale
+    # for this preset.
+    duration = duration * 1000
     transitions = [
         # First set to minimum temperature, low brightness, nearly immediately.
         tr.TemperatureTransition(1700, duration=50, brightness=1),
