@@ -288,10 +288,10 @@ def sunrise(duration=5*60*1000):
     """Simulate sunrise in milliseconds (default 5min)."""
     click.echo("Good morning!")
     transitions = [
-        # first set to minimum temperature, low brightness, nearly immediately
+        # First set to minimum temperature, low brightness, nearly immediately.
         tr.TemperatureTransition(1700, duration=50, brightness=1),
-        # then slowly transition to higher temperature, max brightness
-        # 5000 is about regular daylight white
+        # Then slowly transition to higher temperature, max brightness.
+        # 5000 is about regular daylight white.
         tr.TemperatureTransition(2100, duration=duration/2, brightness=50),
         tr.TemperatureTransition(5000, duration=duration/2, brightness=100),
     ]
