@@ -348,6 +348,7 @@ def status():
                 try:
                     value = hex(int(value)).replace("0x", "#")
                 except TypeError:
+                    # Ignore exception on white-only bulbs.
                     pass
             click.echo("* {}: {}".format(key, value))
 
