@@ -304,7 +304,14 @@ def temp():
 
 
 @preset.command()
-@click.argument('duration', default=5 * 60, type=click.IntRange(50, 24 * 60 * 60), required=False)
+@click.option(
+    "-d",
+    "--duration",
+    metavar='DURATION',
+    type=click.IntRange(50, 24 * 60 * 60),
+    default=5 * 60,
+    help="The number of seconds until the bulb reaches full color."
+)
 def sunrise(duration):
     """Simulate sunrise in seconds (default 5min)."""
     click.echo("Good morning!")
