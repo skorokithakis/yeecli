@@ -345,7 +345,10 @@ def status():
         click.echo("\nBulb parameters:")
         for key, value in bulb.get_properties().items():
             if key == 'rgb':
-                value = hex(int(value)).replace("0x", "#")
+                try:
+                    value = hex(int(value)).replace("0x", "#")
+                except TypeError:
+                    pass
             click.echo("* {}: {}".format(key, value))
 
 
