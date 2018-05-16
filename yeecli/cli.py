@@ -303,7 +303,7 @@ def temp():
 
 
 @preset.command()
-@click.argument('duration', type=click.IntRange(50, 24 * 60 * 60), required=False)
+@click.argument('duration', default=5*60, type=click.IntRange(50, 24 * 60 * 60), required=False)
 def sunrise(duration=5 * 60):
     """Simulate sunrise in seconds (default 5min)."""
     click.echo("Good morning!")
