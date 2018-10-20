@@ -20,7 +20,7 @@ You can install yeecli with pip::
 
     pip install yeecli
 
-You're done! Here are a few sample commands::
+You're done (make sure developer mode is enabled for your bulb in the app)! Here are a few sample commands::
 
     yee --ip=192.168.0.34 turn on
     yee --ip=192.168.0.34 toggle
