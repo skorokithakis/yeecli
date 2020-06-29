@@ -8,10 +8,11 @@ from yeelight import transitions as tr
 try:
     import ConfigParser
 except ImportError:
-    import configparser as ConfigParser
+    import configparser as ConfigParser  # type: ignore
 
 try:
     import tbvaccine
+
     tbvaccine.add_hook()
 except:  # noqa
     pass
@@ -19,7 +20,7 @@ except:  # noqa
 try:
     from . import __version__
 except (SystemError, ValueError):
-    from __init__ import __version__
+    from __init__ import __version__  # type: ignore
 
 BULBS = []
 
@@ -28,9 +29,9 @@ def hex_color_to_rgb(color):
     """Convert a hex color string to an RGB tuple."""
     color = color.strip("#")
     try:
-        red, green, blue = tuple(int(color[i:i + 2], 16) for i in (0, 2, 4))
+        red, green, blue = tuple(int(color[i : i + 2], 16) for i in (0, 2, 4))
     except (TypeError, ValueError):
-        print('Unrecognized color, changing to red...', file=sys.stderr)
+        print("Unrecognized color, changing to red...", file=sys.stderr)
         red, green, blue = (255, 0, 0)
     return red, green, blue
 
@@ -52,31 +53,33 @@ def param_or_config(param, config, section, name, default):
 
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"]})
-@click.version_option(version=__version__, prog_name="yeecli", message="%(prog)s %(version)s: And there was light.")
-@click.option('--ip', metavar='IP', help="The bulb's IP address.")
-@click.option('--port', metavar='PORT', help="The bulb's port.", type=int)
+@click.version_option(
+    version=__version__, prog_name="yeecli", message="%(prog)s %(version)s: And there was light.",
+)
+@click.option("--ip", metavar="IP", help="The bulb's IP address.")
+@click.option("--port", metavar="PORT", help="The bulb's port.", type=int)
 @click.option(
-    "--effect", "-e", metavar='EFFECT', help="The transition effect.", type=click.Choice(['smooth', 'sudden'])
+    "--effect", "-e", metavar="EFFECT", help="The transition effect.", type=click.Choice(["smooth", "sudden"]),
 )
 @click.option(
     "--duration",
     "-d",
     metavar="DURATION_MS",
     help="The transition effect duration.",
-    type=click.IntRange(1, 60000, clamp=True)
+    type=click.IntRange(1, 60000, clamp=True),
 )
 @click.option(
-    "--bulb", "-b", metavar="NAME", default="default", help="The name of the bulb in the config file.", type=str
+    "--bulb", "-b", metavar="NAME", default="default", help="The name of the bulb in the config file.", type=str,
 )
 @click.option(
     "--auto-on/--no-auto-on",
     default=True,
-    help="Whether to turn the bulb on automatically before a command (on by default)."
+    help="Whether to turn the bulb on automatically before a command (on by default).",
 )
 def cli(ip, port, effect, duration, bulb, auto_on):
     """Easily control the YeeLight RGB LED lightbulb."""
     config = ConfigParser.SafeConfigParser()
-    config.read([os.path.expanduser('~/.config/yeecli/yeecli.cfg')])
+    config.read([os.path.expanduser("~/.config/yeecli/yeecli.cfg")])
 
     ip = param_or_config(ip, config, bulb, "ip", None)
     port = param_or_config(port, config, bulb, "port", 55443)
@@ -87,13 +90,7 @@ def cli(ip, port, effect, duration, bulb, auto_on):
         click.echo("No IP address specified.")
         sys.exit(1)
 
-    BULBS.append(yeelight.Bulb(
-        ip=ip,
-        port=port,
-        effect=effect,
-        duration=duration,
-        auto_on=auto_on,
-    ))
+    BULBS.append(yeelight.Bulb(ip=ip, port=port, effect=effect, duration=duration, auto_on=auto_on,))
 
 
 @cli.command()
@@ -144,7 +141,9 @@ def toggle():
 
 @cli.command()
 @click.argument("hex_color", type=str)
-@click.option("--pulses", "-p", metavar='COUNT', type=int, default=2, help="The number of times to pulse.")
+@click.option(
+    "--pulses", "-p", metavar="COUNT", type=int, default=2, help="The number of times to pulse.",
+)
 def pulse(hex_color, pulses):
     """Pulse the bulb in a specific color."""
     red, green, blue = hex_color_to_rgb(hex_color)
@@ -161,7 +160,7 @@ def pulse(hex_color, pulses):
 
 
 @cli.command()
-@click.argument("state", type=click.Choice(['on', 'off']))
+@click.argument("state", type=click.Choice(["on", "off"]))
 def turn(state):
     """Turn the bulb on or off."""
     click.echo("Turning the bulb {}...".format(state))
@@ -198,7 +197,9 @@ def christmas():
 
 
 @preset.command()
-@click.option("--bpm", metavar='BPM', type=int, default=200, help="The beats per minute to pulse at.")
+@click.option(
+    "--bpm", metavar="BPM", type=int, default=200, help="The beats per minute to pulse at.",
+)
 def disco(bpm):
     """Party."""
     click.echo("Party mode: activated.")
@@ -211,10 +212,10 @@ def disco(bpm):
 @click.option(
     "-d",
     "--duration",
-    metavar='DURATION',
+    metavar="DURATION",
     type=int,
     default=3000,
-    help="The number of milliseconds to take for each change."
+    help="The number of milliseconds to take for each change.",
 )
 def lsd(duration):
     """Color changes to a trippy palette."""
@@ -249,10 +250,10 @@ def police2():
 @click.option(
     "-d",
     "--duration",
-    metavar='DURATION',
+    metavar="DURATION",
     type=int,
     default=750,
-    help="The number of milliseconds to take for each change."
+    help="The number of milliseconds to take for each change.",
 )
 def random(duration):
     """Random colors."""
@@ -307,10 +308,10 @@ def temp():
 @click.option(
     "-d",
     "--duration",
-    metavar='DURATION',
+    metavar="DURATION",
     type=click.IntRange(50, 24 * 60 * 60),
     default=5 * 60,
-    help="The number of seconds until the bulb reaches full color."
+    help="The number of seconds until the bulb reaches full color.",
 )
 def sunrise(duration):
     """Simulate sunrise in seconds (default 5min)."""
@@ -352,7 +353,7 @@ def status():
     for bulb in BULBS:
         click.echo("\nBulb parameters:")
         for key, value in bulb.get_properties().items():
-            if key == 'rgb':
+            if key == "rgb":
                 try:
                     value = hex(int(value)).replace("0x", "#")
                 except TypeError:
