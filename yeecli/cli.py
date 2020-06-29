@@ -78,19 +78,27 @@ def param_or_config(param, config, section, name, default):
 )
 def cli(ip, port, effect, duration, bulb, auto_on):
     """Easily control the YeeLight RGB LED lightbulb."""
-    config = ConfigParser.SafeConfigParser()
+    config = ConfigParser.ConfigParser()
     config.read([os.path.expanduser("~/.config/yeecli/yeecli.cfg")])
 
-    ip = param_or_config(ip, config, bulb, "ip", None)
+    ips = param_or_config(ip, config, bulb, "ip", None)
     port = param_or_config(port, config, bulb, "port", 55443)
     effect = param_or_config(effect, config, bulb, "effect", "sudden")
     duration = param_or_config(duration, config, bulb, "duration", 500)
 
-    if not ip:
+    if not ips:
         click.echo("No IP address specified.")
         sys.exit(1)
 
-    BULBS.append(yeelight.Bulb(ip=ip, port=port, effect=effect, duration=duration, auto_on=auto_on,))
+    for ip in ips.split(","):
+        ip = ip.strip()
+        if ":" in ip:
+            ip, prt = ip.split(":")
+        else:
+            # If no port is specified, use the default one.
+            prt = port
+
+        BULBS.append(yeelight.Bulb(ip=ip, port=prt, effect=effect, duration=duration, auto_on=auto_on,))
 
 
 @cli.command()

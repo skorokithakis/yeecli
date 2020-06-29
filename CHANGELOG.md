@@ -34,6 +34,7 @@ Fix
 
 Other
 ~~~~~
+- Add pre-commit. [Stavros Korokithakis]
 - Add mention of development mode in the README. [Stavros Korokithakis]
 - Style code. [Stavros Korokithakis]
 - Add sunrise preset (#2) [Семён Марьясин]

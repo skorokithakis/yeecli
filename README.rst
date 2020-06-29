@@ -23,7 +23,7 @@ You can install yeecli with pip::
 You're done (make sure developer mode is enabled for your bulb in the app)! Here are a few sample commands::
 
     yee --ip=192.168.0.34 turn on
-    yee --ip=192.168.0.34 toggle
+    yee --ip=192.168.0.34,192.168.0.28:8329 toggle
     yee --ip=192.168.0.34 rgb ff00ff
     yee --ip=192.168.0.34 brightness 100
 
@@ -41,11 +41,11 @@ Currently supported:
 * Additional HSV flow transition
 * Presets
 * Multiple bulbs
+* Bulb groups
 
 Will probably be supported at some point:
 
 * Music mode
-* Bulb groups
 * Discovery
 
 
@@ -86,8 +86,8 @@ You can also specify multiple bulbs like so::
     duration = 500
 
     [hallway]
-    ip = 192.168.12.5
+    ip = 192.168.12.5:88273,192.168.12.3
 
-Then, to select a specific bulb, just pass it to the ``--bulb`` option::
+Then, to select a specific bulb/bulb group, just pass it to the ``--bulb`` option::
 
     yee --bulb=bedroom brightness 100
