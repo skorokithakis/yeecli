@@ -5,23 +5,47 @@
 #    pip-compile --output-file requirements_dev.txt requirements_dev.in
 #
 coverage==4.4.1
+    # via -r requirements_dev.in
 flake8-docstrings==1.1.0
+    # via -r requirements_dev.in
 flake8-import-order==0.12
-flake8-polyfill==1.0.1    # via flake8-docstrings
+    # via -r requirements_dev.in
+flake8-polyfill==1.0.1
+    # via flake8-docstrings
 flake8-tidy-imports==1.0.6
+    # via -r requirements_dev.in
 flake8==3.3.0
-mccabe==0.6.1             # via flake8
+    # via
+    #   -r requirements_dev.in
+    #   flake8-docstrings
+    #   flake8-polyfill
+    #   flake8-tidy-imports
+mccabe==0.6.1
+    # via flake8
 pep8-naming==0.4.1
-pluggy==0.4.0             # via tox
-py==1.4.34                # via tox
-pycodestyle==2.3.1        # via flake8, flake8-import-order
-pydocstyle==2.0.0         # via flake8-docstrings
-pyflakes==1.5.0           # via flake8
-six==1.10.0               # via pydocstyle
-snowballstemmer==1.2.1    # via pydocstyle
+    # via -r requirements_dev.in
+pluggy==0.4.0
+    # via tox
+py==1.10.0
+    # via tox
+pycodestyle==2.3.1
+    # via
+    #   flake8
+    #   flake8-import-order
+pydocstyle==2.0.0
+    # via flake8-docstrings
+pyflakes==1.5.0
+    # via flake8
+six==1.10.0
+    # via pydocstyle
+snowballstemmer==1.2.1
+    # via pydocstyle
 tox==2.7.0
-virtualenv==15.1.0        # via tox
+    # via -r requirements_dev.in
+virtualenv==15.1.0
+    # via tox
 wheel==0.29.0
+    # via -r requirements_dev.in
 
 # The following packages are considered to be unsafe in a requirements file:
-# setuptools                # via flake8-import-order
+# setuptools
